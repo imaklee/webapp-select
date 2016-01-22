@@ -21,7 +21,7 @@ function startServer() {
 		console.log("打开 " + this.options.get("urls").toJS().local + " 进行开发");
 	});
 
-	chokidar.watch( "../demo/index.html" ).on("change", function(){
+	chokidar.watch( "**/*.html" ).on("change", function(){
 		browserSync.reload();
 	})
 }
