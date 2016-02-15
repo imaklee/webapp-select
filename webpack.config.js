@@ -26,7 +26,7 @@ var config	= {
 			test : /\.tpl$/,
 			loader : "dot-tpl"
 		}, {
-			test : /\.(png|gif|jpg|jpeg)$/,
+			test : /\.(png|gif|jpg|jpeg)(\?.*)$/,
 			loader : "url"
 		}, {
 			test : /\.(less|css)$/, 
