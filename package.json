@@ -1,6 +1,6 @@
 {
   "name": "webapp-select",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "单项以及联动下拉列表组件，专为移动端设计",
   "main": "index.js",
   "scripts": {
