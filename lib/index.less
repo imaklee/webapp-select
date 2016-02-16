@@ -41,28 +41,40 @@
 		text-align: center;
 		border-bottom: 0.1rem solid #e5e5e5;
 
-		.close-icon {
+		.close-icon, .back-icon {
 			display: inline-block;
 			position: absolute;
-			width: 5.0rem;
+			width: 3.6rem;
 			height: 5.0rem;
 			top: 0;
 			right: 0;
-			background: url(./images/close.png?exports) 1.9rem 1.9rem no-repeat;
+			background: url(./images/close.png?exports) 1.2rem 1.9rem no-repeat;
 			background-size: 1.2rem 1.2rem;
+		}
+
+		.back-icon {
+			left: 0;
+			right: auto;
+			width: 3.2rem;
+			display: none;
+			background: url(./images/back.png?exports) 1.2rem 1.7rem no-repeat;
+			background-size: 0.8rem 1.6rem;
 		}
 	}
 
 	.select-list {
-		line-height: 2.0rem;
-		font-size: 1.4rem;
 		max-height: 22.5rem;
-		overflow-y: scroll;
+		position: relative;
 		-webkit-overflow-scrolling: touch;
+		transition: left .1s ease-in;
 
 		ul {
 			margin: 0rem;
 			padding: 0rem;
+			height: 22.5rem;
+			float: left;
+			overflow-y: scroll;
+			position: relative;
 			list-style-type: none;
 		}
 
@@ -80,6 +92,23 @@
 
 			&.selected {
 				background-color: #f5f5f5;
+			}
+
+			&.loading {
+				padding-top: 8.0rem;
+				text-align: center;
+
+				&::before {
+					content: "";
+					display: inline-block;
+					width: 2.0rem;
+					height: 2.0rem;
+					position: absolute;
+					top: 4.5rem;
+					left: 50%;
+					margin-left: -1.0rem;
+					background: url(./images/loading.gif?exports) 0 0 / cover no-repeat;
+				}
 			}
 		}
 	}

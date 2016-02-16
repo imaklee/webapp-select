@@ -47,99 +47,79 @@
   \***************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(/*! ./index.less */ 1);
+	/* WEBPACK VAR INJECTION */(function($) {__webpack_require__(/*! ./index.less */ 2);
 
-	var SelectList	= __webpack_require__(/*! ../../index.js */ 5);
+	var SelectList	= __webpack_require__(/*! ../../index.js */ 6);
 
+	// 初始化所有的select列表
 	SelectList.init();
 
+	// 通过接口获取数据列表
+	$("#education-name").on("click", function(event){
+		return SelectList.init("education", {
+			title	: "请选择学历",
+			data	: "/edu-list",
+			callback: function(item){
+				$("#education-name").html(item.text);
+				$("#education").val(item.value);
+			}
+		});
+	});
+
+	// 通过方法获取数据列表
+	$("#hobby-name").on("click", function(event){
+		return SelectList.init("hobby", {
+			title	: "请选择爱好",
+			data	: function(){
+				return [
+					{ text : "游戏", value : 0, selected : true },
+					{ text : "看书", value : 1 },
+					{ text : "旅游", value : 2 },
+					{ text : "运动", value : 3 },
+					{ text : "其它", value : 4 },
+				];
+			},
+			callback: function(item){
+				$("#hobby").val(item.value);
+				$("#hobby-name").html(item.text);
+			}
+		});
+	});
+
+	// 设置多维度联动功能
+	$("#area-name").on("click", function(event){
+		return SelectList.init("area", {
+			title	: "请选择省份",
+			chains	: [{
+				title	: "请选择省份",
+				data	: [
+					{ text : "北京", value : 0, selected : true },
+					{ text : "浙江省", value : 1 },
+				]
+			}, {
+				title	: "请选择城市",
+				data	: function(){
+					return [
+						{ text : "北京市", value : 2, selected : true }
+					];
+				}
+			}, {
+				title	: "请选择区",
+				data	: "/county-list"
+			}],
+			callback : function(prov, city, county){
+				var area	= [prov.text, city.text, county.text].join(" ");
+
+				$("#area-name").html(area);
+				$("#area").val(area);
+			}
+		});
+	}).trigger("click");
+
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! jquery */ 1)))
 
 /***/ },
 /* 1 */
-/*!*****************************!*\
-  !*** ./demo/app/index.less ***!
-  \*****************************/
-/***/ function(module, exports) {
-
-	// removed by extract-text-webpack-plugin
-
-/***/ },
-/* 2 */,
-/* 3 */,
-/* 4 */,
-/* 5 */
-/*!******************!*\
-  !*** ./index.js ***!
-  \******************/
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function($) {var getSignInst = __webpack_require__(/*! ./lib/index.js */ 7);
-
-	module.exports	= {
-		init	: function(selectId, options){
-			//{{{ 初始化下拉列表
-			if( arguments.length == 0 ) {
-				return this.initAllPgSelect();
-			}else{
-				return getSignInst(selectId, options);
-			}
-			//}}}
-		},
-
-		initAllPgSelect : function(){
-			//{{{ 初始化页面已有的下拉列表标签
-			var autoIdIndex	= 1;
-
-			// 递归初始化所有的select列表
-			$("select").each(function(index, select){
-				// 组件的id，作为组件唯一标示，用于标记单例对象
-				var selectId	= $(select).attr("id") || ("select" + autoIdIndex++);
-
-				// 数据列表
-				var $selectedOpt= $(select).find("option[selected]");
-				var title		= $(select).siblings("label").text();
-				var data		= $(select).find("option").map(function(index, option){
-					var text	= $(option).text();
-					var value	= $(option).attr("value");
-					var selected= index == 0 && !$selectedOpt.length || typeof $(option).attr("selected") != "undefined";
-
-					return { text : text, value : value, selected : selected };
-				}).toArray();
-
-				// 通过input和span代替select
-				var $input		= $("<input type='text' value='" + $(select).val() + "'/>").insertAfter($(select));
-				var $span		= $("<span class='webapp-select-item'>" + $selectedOpt.html() + "</span>").insertAfter($(select));
-
-				// 复制所有的属性
-				$.each(select.attributes, function(index, item){
-					$input.attr(item.nodeName, item.nodeValue);
-				});
-
-				// 点击弹出下拉列表
-				$span.on("click", function(){
-					return getSignInst(selectId, {
-						title	: title, 
-						data	: data,
-						callback	: function(item){
-							$input.val(item.value);
-							$span.html(item.text);
-						}
-					});
-				})
-				.addClass($(select).attr("class"))
-				.css({ width : $(select).width(), height : $(select).height() });
-				
-				// 删除原始select节点
-				$(select).remove();
-			});			  
-			//}}}
-		}
-	};
-
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! jquery */ 6)))
-
-/***/ },
-/* 6 */
 /*!*********************************!*\
   !*** ./~/jquery/dist/jquery.js ***!
   \*********************************/
@@ -9979,6 +9959,90 @@
 
 
 /***/ },
+/* 2 */
+/*!*****************************!*\
+  !*** ./demo/app/index.less ***!
+  \*****************************/
+/***/ function(module, exports) {
+
+	// removed by extract-text-webpack-plugin
+
+/***/ },
+/* 3 */,
+/* 4 */,
+/* 5 */,
+/* 6 */
+/*!******************!*\
+  !*** ./index.js ***!
+  \******************/
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function($) {var getSignInst = __webpack_require__(/*! ./lib/index.js */ 7);
+
+	module.exports	= {
+		init	: function(selectId, options){
+			//{{{ 初始化下拉列表
+			if( arguments.length == 0 ) {
+				return this.initAllPgSelect();
+			}else{
+				return getSignInst(selectId, options);
+			}
+			//}}}
+		},
+
+		initAllPgSelect : function(){
+			//{{{ 初始化页面已有的下拉列表标签
+			var autoIdIndex	= 1;
+
+			// 递归初始化所有的select列表
+			$("select").each(function(index, select){
+				// 组件的id，作为组件唯一标示，用于标记单例对象
+				var selectId	= $(select).attr("id") || ("select" + autoIdIndex++);
+
+				// 数据列表
+				var $selectedOpt= $(select).find("option[selected]");
+				var title		= $(select).siblings("label").text();
+				var data		= $(select).find("option").map(function(index, option){
+					var text	= $(option).text();
+					var value	= $(option).attr("value");
+					var selected= index == 0 && !$selectedOpt.length || typeof $(option).attr("selected") != "undefined";
+
+					return { text : text, value : value, selected : selected };
+				}).toArray();
+
+				// 通过input和span代替select
+				var $input		= $("<input type='text' value='" + $(select).val() + "'/>").insertAfter($(select));
+				var $span		= $("<span class='webapp-select-item'>" + $selectedOpt.html() + "</span>").insertAfter($(select));
+
+				// 复制所有的属性
+				$.each(select.attributes, function(index, item){
+					$input.attr(item.nodeName, item.nodeValue);
+				});
+
+				// 点击弹出下拉列表
+				$span.on("click", function(){
+					return getSignInst(selectId, {
+						title	: title, 
+						data	: data,
+						callback	: function(item){
+							$input.val(item.value);
+							$span.html(item.text);
+						}
+					});
+				})
+				.addClass($(select).attr("class"))
+				.css({ width : $(select).width(), height : $(select).height() });
+				
+				// 删除原始select节点
+				$(select).remove();
+			});			  
+			//}}}
+		}
+	};
+
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! jquery */ 1)))
+
+/***/ },
 /* 7 */
 /*!**********************!*\
   !*** ./lib/index.js ***!
@@ -9995,18 +10059,12 @@
 		this.options	= extend({
 			title	: "请选择",
 			chains	: [],
-			data	: [{ text : "尚未设置数据源", value : "", selected : true }],
-			callback	: function(){
-				console.log(arguments);
-			}
+			data	: [],
+			callback: function(){ }
 		}, options);
 
-		if( this.options.chains.length == 0 ) {
-			this.options.chains	= [{
-				title	: this.options.title,
-				data	: this.options.data
-			}];
-		}
+		// 缓存通过方法或者接口获取的数据，避免重复计算或者请求，第一级的key值使用"data"
+		this.caches		= {}; 
 
 		this.init();
 		//}}}
@@ -10015,13 +10073,31 @@
 	extend(SelectList.prototype, {
 		init : function(){
 			//{{{
+			//统一使用chains进行处理
+			if( this.options.chains.length == 0 ) {
+				this.options.chains	= [{
+					title	: this.options.title,
+					data	: this.options.data
+				}];
+			}
+
 			this.render();
 			this.bindEvents();
+
+			var self	= this;
+			var $ul		= this.content.find(".select-list ul:first-child");
+
+			if(Object.prototype.toString.call(this.options.chains[0]) != "[object Array]") {
+				this.showLoading($ul);
+				this.getRemoteData(this.options.chains[0].data, function(data){
+					self.rendItemList($ul, data);
+				});
+			}
 			//}}}
 		},
 
 		render : function(){
-			//{{{ 渲染列表选择弹窗
+			//{{{ 渲染列表选择弹窗，并绑定用户事件
 			this.content	= $(contentTpl.render({
 				title	: this.options.title,
 				chains	: this.options.chains
@@ -10031,36 +10107,166 @@
 
 		bindEvents : function(){
 			//{{{ 绑定组件用户事件
-			var self	= this;
+			var self		= this;
+			var chainLen	= this.options.chains.length;
 
-			$("body").off("click", ".webapp-select-list .close-icon");
-			$("body").on("click", ".webapp-select-list .close-icon", function(event){
+			this.content.on("click", ".back-icon", function(event){
+				//{{{ 返回上一级
+				var $selectList	= self.content.find(".select-list"); 
+				var curIndex	= $selectList.attr("data-index");
+
+				$selectList.attr("data-index", curIndex - 1);
+				$selectList.css({"left" : "-" + ((curIndex - 1) * 100) + "%"});
+
+				self.updateTitle();
+				self.toggleBackIcon();
+				//}}}
+			});
+
+			this.content.on("click", ".close-icon", function(event){
 				//{{{ 关闭下拉列表弹窗
 				self.hide();
 				//}}}
 			});
 
-			$("body").off("click", ".webapp-select-list li");
-			$("body").on("click", ".webapp-select-list li", function(event){
+			this.content.on("click", "li", function(event){
 				//{{{ 点击选中列表项
-				var item = {
-					text	: $(this).html(),
-					value	: $(this).attr("data-value")
-				};
+				var ulIndex		= $(this).parent().index();
+				var $selectList	= self.content.find(".select-list"); 
 
 				$(this).addClass("selected");
 				$(this).siblings(".selected").removeClass("selected");
+				$selectList.attr("data-index", ulIndex + 1);
 
-				self.hide();
-				self.options.callback.apply(self, [item]);		
+				//如果是存在子级列表，则切换到子级列表，否则隐藏列表并执行回调
+				if( ulIndex < chainLen - 1 ) {
+					self.updateTitle();
+					self.toggleBackIcon();
+					self.updateChildList();
+					self.showLoading($(this).parent().next());
+					$selectList.css({"left" : "-" + ((ulIndex + 1) * 100) + "%"});;
+				}else {
+					self.hide();
+					self.options.callback.apply(self, self.getSelectedItems());		
+				}
 				//}}}
 			});
+			//}}}
+		},
+
+		toggleBackIcon : function(){
+			//{{{ 多级联动，显示返回图标
+			var $backIcon	= this.content.find(".title .back-icon");
+			var curIndex	= this.content.find(".select-list").attr("data-index");
+
+			if( curIndex == 0 ) {
+				$backIcon.hide();
+			}else {
+				$backIcon.show();
+			}
+			//}}}
+		},
+
+		updateTitle : function(){
+			//{{{ 更新列表的title名称
+			var curIndex	= this.content.find(".select-list").attr("data-index");
+			var itemData	= this.options.chains[curIndex];
+			var title		= itemData.title || this.options.title;
+
+			this.content.find(".title-name").html(title);
+			//}}}
+		},
+
+		updateChildList : function(){
+			//{{{ 根据上一级列表选中的内容，渲染当前级别的列表项
+			var self		= this;
+			var $selectList = this.content.find(".select-list");
+			var ulIndex		= parseInt($selectList.attr("data-index"));
+			var chainItem	= this.options.chains[ulIndex];
+			var $ul			= $selectList.find("ul:nth-child(" + (ulIndex + 1) + ")");
+
+			$ul.html("");
+
+			this.getRemoteData(chainItem.data, function(data){
+				return self.rendItemList($ul, data);
+			});
+			//}}}
+		},
+
+		rendItemList : function(ul, data){
+			//{{{ 根据数据列表，更新dom节点
+			$(ul).html(data.map(function(item){
+				return "<li data-value='" + item.value + "' class='" + (item.selected ? "selected" : "") + "'>" 
+					+ item.text 
+					+ "</li>";			
+			}).join(""));
+			//}}}
+		},
+
+		getRemoteData : function(itemData, callback){
+			//{{{ 获取数据源列表，并根据数据源更新列表内容
+			var	self			= this;
+			var selectedData	= this.getSelectedItems();
+
+			// 计算key值并将数据换存在caches中, 如果是第一级，则直接使用data作为key值
+			var curIndex	= this.content ? this.content.find(".select-list").attr("data-index") : 0;
+			var keyName		= ["data"].concat(selectedData.map(function(item, index){
+				return index < curIndex ? item.value : "";
+			})).join("##");
+
+			// 如果缓存中有，则直接使用缓存的数据
+			if(typeof this.caches[keyName] != "undefined") {
+				return callback && callback(this.caches[keyName]);
+			}
+
+			switch(Object.prototype.toString.call(itemData)) {
+				case "[object String]" :
+					return $.getJSON(itemData, function(result){
+						self.getRemoteData(result, callback);	
+					});
+				case "[object Function]" : 
+					// 真对方法返回结果重新判断一次，方便组装带不同参数的链接
+					return this.getRemoteData(itemData.apply(null, selectedData), callback);
+				case "[object Array]" :
+					// 缓存数据
+					this.caches[keyName] = itemData;
+					callback && callback(itemData);
+					break;
+			} 
+			//}}}
+		},
+
+		getSelectedItems : function(){
+			//{{{ 获取已经选中的数据列表
+			var $selectList		= this.content ? this.content.find(".select-list") : null;
+			var selectedData	= $selectList ? $selectList.find("ul").map(function(index, ul){
+				var $selected	= $(ul).find("li.selected");
+
+				return $selected.length ? {
+					text : $selected.text(),
+					value: $selected.attr("data-value")
+				} : null;
+			}).toArray() : [];
+						   
+			return selectedData;
+			//}}}
+		},
+
+		showLoading : function(ul){
+			//{{{ 在列表数据项完成加载之前，显示loading图标，在网络情况良好的情况下就不用显示
+			setTimeout(function(){
+				$(ul).html() == "" && $(ul).html("<li class='loading'>加载中...</li>");
+			}, 500);
 			//}}}
 		},
 
 		hide : function(){
 			//{{{ 隐藏当前弹窗
 			this.content.hide();
+			this.content.find(".select-list").css({"left" : "0%"}).attr("data-index", 0);
+
+			this.updateTitle();
+			this.toggleBackIcon();
 			//}}}
 		},
 
@@ -10086,7 +10292,7 @@
 		};
 	})();
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! jquery */ 6)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! jquery */ 1)))
 
 /***/ },
 /* 8 */
@@ -10204,7 +10410,7 @@
 	module.exports = (function () {
 	  var fn = function anonymous(it
 	/**/) {
-	var out='<div class="webapp-select-list"><div class="wrap"></div><div class="content"><h3 class="title"><span class="close-icon"></span><span class="back-icon"></span>'+(it.title)+'</h3><!-- data-index: 当前显示的列表的index序号，从0开始计算 --><div class="select-list" data-index="0">'; for(var index in it.chains){  var title= it.chains[index].title || "";  var dataList= it.chains[index].data || []; out+='<ul>'; for(var num in dataList){ out+='<li data-value="'+(dataList[num].value)+'" class="'+(dataList[num].selected ? 'selected' : '')+'">'+(dataList[num].text)+'</li>'; } out+='</ul>'; } out+='</div></div></div>';return out;
+	var out='<div class="webapp-select-list"><div class="wrap"></div><div class="content"><h3 class="title"><span class="close-icon"></span><span class="back-icon"></span><span class="title-name">'+(it.title)+'</span></h3><!-- data-index: 当前显示的列表的index序号，从0开始计算 --><div class="select-list" data-index="0" style="width: '+(it.chains.length * 100)+'%; left: 0%;">'; for(var index in it.chains){  var title= it.chains[index].title || "";  var dataList= it.chains[index].data || []; out+='<ul style="width: '+(100/it.chains.length)+'%;">'; if( Object.prototype.toString.call(dataList) == "[object Array]" ){  for(var num in dataList){ out+='<li data-value="'+(dataList[num].value)+'" class="'+(dataList[num].selected ? 'selected' : '')+'">'+(dataList[num].text)+'</li>'; }  } out+='</ul>'; } out+='</div></div></div>';return out;
 	};
 	  fn.render = fn;
 	  return fn;

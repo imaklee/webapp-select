@@ -1,0 +1,7 @@
+[
+	{ "text": "硕士学位", "value": 0 },
+	{ "text": "大学本科", "value": 1, "selected": "true" },
+	{ "text": "大专", "value": 2 },
+	{ "text": "高中", "value": 3 },
+	{ "text": "博士", "value": 4 }
+]

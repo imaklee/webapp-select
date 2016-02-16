@@ -1,0 +1,8 @@
+module.exports	= function(){
+	return [
+		{ text : "海淀区", value : 0 },
+		{ text : "昌平区", value : 1 },
+		{ text : "东城区", value : 2 },
+		{ text : "朝阳区", value : 3 }
+	];
+};
